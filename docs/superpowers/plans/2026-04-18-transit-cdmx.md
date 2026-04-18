@@ -15,7 +15,7 @@
 ## File Structure
 
 ```
-transit-cdmx/
+score-card-flotilla/
 ├── scripts/
 │   └── process-gtfs.mjs          # GTFS CSV -> JSON/GeoJSON processor
 ├── public/data/                   # Generated static data (gitignored)
@@ -66,17 +66,17 @@ transit-cdmx/
 ## Task 1: Scaffold Next.js project and install dependencies
 
 **Files:**
-- Create: `transit-cdmx/package.json`
-- Create: `transit-cdmx/next.config.ts`
-- Create: `transit-cdmx/tailwind.config.ts`
-- Create: `transit-cdmx/tsconfig.json`
-- Create: `transit-cdmx/src/styles/globals.css`
+- Create: `score-card-flotilla/package.json`
+- Create: `score-card-flotilla/next.config.ts`
+- Create: `score-card-flotilla/tailwind.config.ts`
+- Create: `score-card-flotilla/tsconfig.json`
+- Create: `score-card-flotilla/src/styles/globals.css`
 
 - [ ] **Step 1: Create Next.js app**
 
 ```bash
 cd /Users/elias/Documents/Trabajo/180426
-npx create-next-app@latest transit-cdmx --typescript --tailwind --eslint --app --src-dir --no-import-alias --use-npm
+npx create-next-app@latest score-card-flotilla --typescript --tailwind --eslint --app --src-dir --no-import-alias --use-npm
 ```
 
 Accept all defaults. This creates the base project.
@@ -84,7 +84,7 @@ Accept all defaults. This creates the base project.
 - [ ] **Step 2: Install dependencies**
 
 ```bash
-cd /Users/elias/Documents/Trabajo/180426/transit-cdmx
+cd /Users/elias/Documents/Trabajo/180426/score-card-flotilla
 npm install leaflet react-leaflet recharts ai @ai-sdk/anthropic
 npm install -D @types/leaflet csv-parse
 ```
@@ -140,14 +140,14 @@ export default nextConfig;
 - [ ] **Step 5: Copy GTFS data into project**
 
 ```bash
-cp -r /Users/elias/Documents/Trabajo/180426/gtfs /Users/elias/Documents/Trabajo/180426/transit-cdmx/gtfs
-mkdir -p /Users/elias/Documents/Trabajo/180426/transit-cdmx/public/data
+cp -r /Users/elias/Documents/Trabajo/180426/gtfs /Users/elias/Documents/Trabajo/180426/score-card-flotilla/gtfs
+mkdir -p /Users/elias/Documents/Trabajo/180426/score-card-flotilla/public/data
 ```
 
 - [ ] **Step 6: Initialize git and commit**
 
 ```bash
-cd /Users/elias/Documents/Trabajo/180426/transit-cdmx
+cd /Users/elias/Documents/Trabajo/180426/score-card-flotilla
 git init
 echo "public/data/*.json" >> .gitignore
 echo "node_modules" >> .gitignore
@@ -637,7 +637,7 @@ console.log("\nDone! All files written to public/data/");
 - [ ] **Step 2: Run the script**
 
 ```bash
-cd /Users/elias/Documents/Trabajo/180426/transit-cdmx
+cd /Users/elias/Documents/Trabajo/180426/score-card-flotilla
 node scripts/process-gtfs.mjs
 ```
 
@@ -1191,7 +1191,7 @@ export default function HomePage() {
 - [ ] **Step 2: Run dev server and verify**
 
 ```bash
-cd /Users/elias/Documents/Trabajo/180426/transit-cdmx
+cd /Users/elias/Documents/Trabajo/180426/score-card-flotilla
 npm run dev
 ```
 
@@ -2036,7 +2036,7 @@ git commit -m "feat: add AI route planner with Claude chat and transit context"
 - [ ] **Step 1: Run the full app**
 
 ```bash
-cd /Users/elias/Documents/Trabajo/180426/transit-cdmx
+cd /Users/elias/Documents/Trabajo/180426/score-card-flotilla
 npm run dev
 ```
 

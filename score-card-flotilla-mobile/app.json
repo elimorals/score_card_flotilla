@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "transit-cdmx-mobile",
-    "slug": "transit-cdmx-mobile",
+    "name": "score-card-flotilla-mobile",
+    "slug": "score-card-flotilla-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
