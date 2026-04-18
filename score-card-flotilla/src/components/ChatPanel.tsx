@@ -25,7 +25,7 @@ export default function ChatPanel({ onHighlight }: ChatPanelProps) {
     if (lastMessage?.role === "assistant" && onHighlight) {
       // Un pequeño truco: buscar IDs que parecen de GTFS o nombres de líneas
       // En una implementación real, Claude podría devolver JSON estructurado
-      const content = lastMessage.content;
+      const content = (lastMessage as any).content || "";
       
       // Ejemplo simplificado: buscamos palabras como "L1", "L2", "L7", etc.
       // O IDs numéricos si los conocemos.
@@ -78,7 +78,7 @@ export default function ChatPanel({ onHighlight }: ChatPanelProps) {
                   : "bg-white/10 text-gray-200"
               }`}
             >
-              <div className="whitespace-pre-wrap">{msg.content}</div>
+              <div className="whitespace-pre-wrap">{(msg as any).content}</div>
             </div>
           </div>
         ))}

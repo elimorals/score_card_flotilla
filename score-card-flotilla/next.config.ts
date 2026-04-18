@@ -2,10 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  experimental: {
-    turbopack: {
-      root: "./",
-    },
+  // @ts-ignore - Turbopack root config
+  turbopack: {
+    root: "./",
   },
 };
 

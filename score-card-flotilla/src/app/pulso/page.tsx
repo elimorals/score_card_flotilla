@@ -64,7 +64,7 @@ export default function PulsoPage() {
           <BarChart 
             data={routesByAgencyData} 
             layout="vertical"
-            onClick={(state) => {
+            onClick={(state: any) => {
               if (state && state.activePayload) {
                 handleBarClick(state.activePayload[0].payload);
               }
