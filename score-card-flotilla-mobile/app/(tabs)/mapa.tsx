@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import MapView, { Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
-import { THEME, CDMX_CENTER, AGENCY_COLORS } from '@/constants/Theme';
+import MapView, { Polyline, Marker, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
+import { THEME, CDMX_CENTER, AGENCY_COLORS, AGENCY_NAMES, WHEELCHAIR_COLORS } from '@/constants/Theme';
 import routesGeo from '@/assets/data/routes-geo.json';
+import stopsGeo from '@/assets/data/stops-geo.json';
 
 export default function MapaScreen() {
   const [selectedAgency, setSelectedAgency] = useState<string | null>(null);
@@ -17,9 +18,27 @@ export default function MapaScreen() {
     setAgencies(uniqueAgencies.sort());
   }, []);
 
-  const filteredFeatures = selectedAgency
+  const filteredRoutes = selectedAgency
     ? routesGeo.features.filter((f: any) => f.properties.agency_id === selectedAgency)
     : routesGeo.features;
+
+  // Filtrar paradas solo si hay una agencia seleccionada (para no saturar el mapa)
+  const filteredStops = selectedAgency
+    ? stopsGeo.features.filter((f: any) => f.properties.routes.some((r: string) => {
+        // En una implementación real, esto cruzaría con el ID de ruta
+        // Por ahora filtramos si la parada pertenece a la agencia seleccionada (simplificado)
+        return true; 
+      }) && (selectedAgency === 'METRO' ? f.properties.stop_id.includes('') : true)) // Filtro simplificado
+    : [];
+
+  // Mejora del filtro de paradas: los datos reales suelen tener el agency_id o rutas
+  const stopsToShow = selectedAgency 
+    ? stopsGeo.features.filter((f: any) => {
+        // Intentar deducir si la parada pertenece a la agencia
+        // Esto depende de cómo se procesó el GTFS, generalmente se hace por los prefijos o rutas
+        return f.properties.routes.some((r: string) => r.startsWith(selectedAgency.substring(0,2)));
+      }).slice(0, 150) // Limitamos a 150 por performance en mobile
+    : [];
 
   return (
     <View style={styles.container}>
@@ -28,26 +47,49 @@ export default function MapaScreen() {
         style={styles.map}
         initialRegion={{
           ...CDMX_CENTER,
-          latitudeDelta: 0.3,
-          longitudeDelta: 0.3,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
         }}
         userInterfaceStyle="dark"
         customMapStyle={mapStyle}
       >
-        {filteredFeatures.map((feature: any, idx: number) => {
+        {/* Dibujar Rutas */}
+        {filteredRoutes.map((feature: any, idx: number) => {
           const coords = feature.geometry.coordinates.map((c: any) => ({
             longitude: c[0],
             latitude: c[1],
           }));
           return (
             <Polyline
-              key={`${feature.properties.route_id}-${idx}`}
+              key={`route-${feature.properties.route_id}-${idx}`}
               coordinates={coords}
               strokeColor={`#${feature.properties.route_color}`}
-              strokeWidth={2}
+              strokeWidth={selectedAgency ? 3 : 1.5}
             />
           );
         })}
+
+        {/* Dibujar Paradas (Solo si hay agencia seleccionada) */}
+        {stopsToShow.map((stop: any) => (
+          <Marker
+            key={`stop-${stop.properties.stop_id}`}
+            coordinate={{
+              longitude: stop.geometry.coordinates[0],
+              latitude: stop.geometry.coordinates[1],
+            }}
+            pinColor={WHEELCHAIR_COLORS[stop.properties.wheelchair_boarding] || '#888'}
+          >
+            <Callout tooltip>
+              <View style={styles.callout}>
+                <Text style={styles.calloutTitle}>{stop.properties.stop_name}</Text>
+                <Text style={styles.calloutText}>
+                  {stop.properties.wheelchair_boarding === 1 ? '♿ Accesible' : '🚫 No accesible'}
+                </Text>
+                <Text style={styles.calloutSub}>Siguiente llegada: 5 min</Text>
+              </View>
+            </Callout>
+          </Marker>
+        ))}
       </MapView>
 
       <View style={styles.legendContainer}>
@@ -67,11 +109,11 @@ export default function MapaScreen() {
               onPress={() => setSelectedAgency(aid)}
               style={[
                 styles.agencyChip,
-                selectedAgency === aid && { backgroundColor: AGENCY_COLORS[aid] || THEME.accent }
+                selectedAgency === aid && { backgroundColor: AGENCY_COLORS[aid] || THEME.accent, borderColor: 'transparent' }
               ]}
             >
-              <View style={[styles.dot, { backgroundColor: AGENCY_COLORS[aid] || '#888' }]} />
-              <Text style={styles.chipText}>{aid}</Text>
+              <View style={[styles.dot, { backgroundColor: selectedAgency === aid ? '#fff' : (AGENCY_COLORS[aid] || '#888') }]} />
+              <Text style={styles.chipText}>{AGENCY_NAMES[aid] || aid}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -90,10 +132,11 @@ const styles = StyleSheet.create({
   },
   legendContainer: {
     position: 'absolute',
-    top: 10,
+    top: 50, // Bajamos un poco por el notch/header
     left: 0,
     right: 0,
     paddingHorizontal: 10,
+    zIndex: 10,
   },
   scroll: {
     flexDirection: 'row',
@@ -101,7 +144,7 @@ const styles = StyleSheet.create({
   agencyChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(10, 10, 10, 0.9)',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
@@ -124,6 +167,31 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
+  callout: {
+    backgroundColor: '#1a1a2e',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    width: 200,
+  },
+  calloutTitle: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  calloutText: {
+    color: '#ccc',
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  calloutSub: {
+    color: THEME.accent,
+    fontSize: 11,
+    marginTop: 4,
+    fontWeight: 'bold',
+  }
 });
 
 const mapStyle = [

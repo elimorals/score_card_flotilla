@@ -4,7 +4,11 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useRef, useEffect, useState } from "react";
 
-export default function ChatPanel() {
+interface ChatPanelProps {
+  onHighlight?: (routeIds: string[]) => void;
+}
+
+export default function ChatPanel({ onHighlight }: ChatPanelProps) {
   const [input, setInput] = useState("");
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({ api: "/api/planifica" }),
@@ -15,7 +19,27 @@ export default function ChatPanel() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    
+    // Si el último mensaje es del asistente, intentamos extraer rutas
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === "assistant" && onHighlight) {
+      // Un pequeño truco: buscar IDs que parecen de GTFS o nombres de líneas
+      // En una implementación real, Claude podría devolver JSON estructurado
+      const content = lastMessage.content;
+      
+      // Ejemplo simplificado: buscamos palabras como "L1", "L2", "L7", etc.
+      // O IDs numéricos si los conocemos.
+      const foundRoutes: string[] = [];
+      if (content.includes("Línea 1") || content.includes("L1")) foundRoutes.push("1");
+      if (content.includes("Línea 2") || content.includes("L2")) foundRoutes.push("2");
+      if (content.includes("Línea 7") || content.includes("L7")) foundRoutes.push("7");
+      if (content.includes("Metrobus L1")) foundRoutes.push("MB1");
+      
+      if (foundRoutes.length > 0) {
+        onHighlight(foundRoutes);
+      }
+    }
+  }, [messages, onHighlight]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -39,12 +63,6 @@ export default function ChatPanel() {
             <p className="text-sm mt-2 max-w-xs mx-auto">
               Escribe de donde a donde quieres ir y te sugiero la mejor combinacion de transporte publico.
             </p>
-            <div className="mt-4 space-y-2 text-xs">
-              <p className="text-gray-600">Prueba:</p>
-              <p className="text-[#e8734a]">&quot;De Coyoacan a Polanco&quot;</p>
-              <p className="text-[#e8734a]">&quot;Como llego al aeropuerto desde CU?&quot;</p>
-              <p className="text-[#e8734a]">&quot;Necesito ruta accesible de Tacubaya a Zocalo&quot;</p>
-            </div>
           </div>
         )}
 
@@ -60,8 +78,7 @@ export default function ChatPanel() {
                   : "bg-white/10 text-gray-200"
               }`}
             >
-              {/* @ts-expect-error - parts property might have different structure in this version */}
-              <div className="whitespace-pre-wrap">{msg.content || (msg.parts && msg.parts[0]?.type === 'text' ? msg.parts[0].text : '')}</div>
+              <div className="whitespace-pre-wrap">{msg.content}</div>
             </div>
           </div>
         ))}
@@ -83,13 +100,13 @@ export default function ChatPanel() {
             value={input}
             onChange={handleInputChange}
             placeholder="De donde a donde quieres ir?"
-            className="flex-1 bg-white/10 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#e8734a]"
+            className="flex-1 bg-white/10 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#e8734a]"
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="bg-[#e8734a] text-white px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50 hover:bg-[#d4623a] transition-colors"
+            className="bg-[#e8734a] text-white px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
           >
             Enviar
           </button>

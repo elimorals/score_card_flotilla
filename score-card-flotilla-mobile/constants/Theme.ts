@@ -26,6 +26,20 @@ export const AGENCY_COLORS: Record<string, string> = {
   SEMOVI: "#009B3A",
 };
 
+export const AGENCY_NAMES: Record<string, string> = {
+  METRO: "Metro",
+  MB: "Metrobús",
+  CC: "Corredores",
+  RTP: "RTP",
+  TROLE: "Trolebús",
+  TL: "Tren Ligero",
+  SUB: "Suburbano",
+  CBB: "Cablebús",
+  PUMABUS: "Pumabús",
+  INTERURBANO: "Tren Insurgente",
+  SEMOVI: "SEMOVI",
+};
+
 export const WHEELCHAIR_COLORS: Record<number, string> = {
   0: "#6b7280", // gray - unknown
   1: "#22c55e", // green - accessible

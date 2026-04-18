@@ -9,6 +9,7 @@ interface RouteLayerProps {
   opacity?: number;
   weight?: number;
   filterAgency?: string | null;
+  highlightedIds?: string[];
   onRouteClick?: (properties: RouteFeatureProperties) => void;
 }
 
@@ -17,6 +18,7 @@ export default function RouteLayer({
   opacity = 0.8,
   weight = 2.5,
   filterAgency = null,
+  highlightedIds = [],
   onRouteClick,
 }: RouteLayerProps) {
   const filteredData: GeoJSON.FeatureCollection = filterAgency
@@ -30,19 +32,23 @@ export default function RouteLayer({
 
   return (
     <GeoJSON
-      key={filterAgency || "all"}
+      key={JSON.stringify(highlightedIds) + (filterAgency || "all")}
       data={filteredData}
       style={(feature) => {
         const p = feature?.properties as RouteFeatureProperties;
+        const isHighlighted = highlightedIds.includes(p?.route_id);
+        
         const color = p?.route_color
           ? `#${p.route_color}`
           : "#888888";
+          
         return {
           color,
-          weight,
-          opacity,
+          weight: isHighlighted ? weight * 3 : weight,
+          opacity: isHighlighted ? 1 : opacity,
           lineJoin: "round",
           lineCap: "round",
+          zIndex: isHighlighted ? 1000 : 1,
         } as PathOptions;
       }}
       onEachFeature={(feature, layer) => {
