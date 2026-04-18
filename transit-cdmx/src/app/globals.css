@@ -1,0 +1,29 @@
+@import "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --accent: #e8734a;
+  --accent-light: #f4a261;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.leaflet-container {
+  background: #1a1a2e !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #1e1e2e !important;
+  color: #ededed !important;
+  border-radius: 8px !important;
+}
+
+.leaflet-popup-tip {
+  background: #1e1e2e !important;
+}

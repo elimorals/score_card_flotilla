@@ -1,0 +1,143 @@
+{
+  "totalStops": 11362,
+  "totalRoutes": 301,
+  "totalAgencies": 10,
+  "accessibleStops": 1188,
+  "notAccessibleStops": 3401,
+  "unknownAccessibilityStops": 6773,
+  "routesByAgency": [
+    {
+      "agency": "CC",
+      "count": 137
+    },
+    {
+      "agency": "RTP",
+      "count": 114
+    },
+    {
+      "agency": "PUMABUS",
+      "count": 12
+    },
+    {
+      "agency": "METRO",
+      "count": 12
+    },
+    {
+      "agency": "TROLE",
+      "count": 11
+    },
+    {
+      "agency": "MB",
+      "count": 8
+    },
+    {
+      "agency": "CBB",
+      "count": 3
+    },
+    {
+      "agency": "SEMOVI",
+      "count": 1
+    },
+    {
+      "agency": "INTERURBANO",
+      "count": 1
+    },
+    {
+      "agency": "TL",
+      "count": 1
+    },
+    {
+      "agency": "SUB",
+      "count": 1
+    }
+  ],
+  "stopsByAgency": [
+    {
+      "agency": "RTP",
+      "count": 4916
+    },
+    {
+      "agency": "CC",
+      "count": 4631
+    },
+    {
+      "agency": "TROLE",
+      "count": 740
+    },
+    {
+      "agency": "MB",
+      "count": 373
+    },
+    {
+      "agency": "METRO",
+      "count": 195
+    },
+    {
+      "agency": "PUMABUS",
+      "count": 90
+    },
+    {
+      "agency": "CBB",
+      "count": 19
+    },
+    {
+      "agency": "TL",
+      "count": 18
+    },
+    {
+      "agency": "SUB",
+      "count": 7
+    },
+    {
+      "agency": "INTERURBANO",
+      "count": 5
+    }
+  ],
+  "avgFrequencyByAgency": [
+    {
+      "agency": "METRO",
+      "avgHeadway": 208
+    },
+    {
+      "agency": "CBB",
+      "avgHeadway": 300
+    },
+    {
+      "agency": "TL",
+      "avgHeadway": 300
+    },
+    {
+      "agency": "SUB",
+      "avgHeadway": 300
+    },
+    {
+      "agency": "MB",
+      "avgHeadway": 301
+    },
+    {
+      "agency": "CC",
+      "avgHeadway": 406
+    },
+    {
+      "agency": "TROLE",
+      "avgHeadway": 412
+    },
+    {
+      "agency": "PUMABUS",
+      "avgHeadway": 480
+    },
+    {
+      "agency": "SEMOVI",
+      "avgHeadway": 600
+    },
+    {
+      "agency": "INTERURBANO",
+      "avgHeadway": 900
+    },
+    {
+      "agency": "RTP",
+      "avgHeadway": 2094
+    }
+  ],
+  "nightRouteCount": 5
+}
