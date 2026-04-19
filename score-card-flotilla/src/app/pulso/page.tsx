@@ -45,9 +45,17 @@ export default function PulsoPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6 text-white">
-        <span className="text-[#e8734a]">Pulso</span> Transit
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-white">
+          <span className="text-[#e8734a]">Pulso</span> Transit
+        </h1>
+        <button
+          onClick={() => window.print()}
+          className="print:hidden bg-[#e8734a] hover:bg-[#d4623a] text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2"
+        >
+          <span>📄</span> Exportar PDF
+        </button>
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <StatsCard label="Paradas totales" value={stats.totalStops} />

@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import AgencyLegend from "@/components/AgencyLegend";
+import ReportIncidentModal from "@/components/ReportIncidentModal";
 
 const TransitMap = dynamic(() => import("@/components/TransitMap"), {
   ssr: false,
@@ -15,6 +16,7 @@ const TransitMap = dynamic(() => import("@/components/TransitMap"), {
 });
 const RouteLayer = dynamic(() => import("@/components/RouteLayer"), { ssr: false });
 const StopMarkers = dynamic(() => import("@/components/StopMarkers"), { ssr: false });
+const IncidentMarkers = dynamic(() => import("@/components/IncidentMarkers"), { ssr: false });
 
 function MapContent() {
   const searchParams = useSearchParams();
@@ -24,7 +26,9 @@ function MapContent() {
   const [stopsGeo, setStopsGeo] = useState<GeoJSON.FeatureCollection | null>(null);
   const [selectedAgency, setSelectedAgency] = useState<string | null>(null);
   const [showOnlyAccessible, setShowOnlyAccessible] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [agencies, setAgencies] = useState<string[]>([]);
+  const [refreshIncidents, setRefreshIncidents] = useState(0);
 
   useEffect(() => {
     Promise.all([
@@ -77,8 +81,8 @@ function MapContent() {
         onSelectAgency={setSelectedAgency}
       />
       
-      {/* Botón flotante de Accesibilidad */}
-      <div className="absolute top-4 right-16 z-[1000]">
+      {/* Botones flotantes */}
+      <div className="absolute top-4 right-16 z-[1000] flex flex-col gap-2 items-end">
         <button
           onClick={() => setShowOnlyAccessible(!showOnlyAccessible)}
           className={`px-4 py-2 rounded-full text-sm font-bold shadow-lg transition-all border ${
@@ -89,12 +93,25 @@ function MapContent() {
         >
           {showOnlyAccessible ? "♿ Solo Accesibles" : "♿ Ver todo"}
         </button>
+        <button
+          onClick={() => setIsReportModalOpen(true)}
+          className="px-4 py-2 bg-red-600 hover:bg-red-500 border border-red-400 text-white rounded-full text-sm font-bold shadow-lg transition-all flex items-center gap-2"
+        >
+          <span>🚨</span> Reportar Incidente
+        </button>
       </div>
 
       <TransitMap>
         <RouteLayer data={routesGeo} filterAgency={selectedAgency} />
         <StopMarkers data={filteredStops} filterAgency={selectedAgency} />
+        <IncidentMarkers key={refreshIncidents} />
       </TransitMap>
+
+      <ReportIncidentModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        onSuccess={() => setRefreshIncidents((prev) => prev + 1)}
+      />
     </div>
   );
 }

@@ -27,3 +27,25 @@ body {
 .leaflet-popup-tip {
   background: #1e1e2e !important;
 }
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: #0a0a0a !important;
+    color: #ededed !important;
+  }
+  
+  nav {
+    display: none !important;
+  }
+  
+  main {
+    padding-top: 0 !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 10mm;
+  }
+}
